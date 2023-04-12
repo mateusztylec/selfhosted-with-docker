@@ -20,7 +20,7 @@ jobs:
           sudo mkdir /key
           cd /key
           sudo touch key.pem
-          sudo echo SSH_KEY > key.pem
+          sudo echo SSH_KEY | sudo tee key.pem
       - name: deploying to cloud
         uses: appleboy/ssh-action@master
         with:
