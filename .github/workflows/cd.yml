@@ -1,0 +1,34 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - "main"  
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: 
+      name: production
+    steps:
+      - name: pulling git repo
+        uses: action/checkout@v2 
+      - name: Add SSH key
+        env:
+          SSH_KEY: ${{secrets.SSH_KEY}}
+        run: |
+          mkdir /key
+          cd /key
+          touch key.pem
+          echo SSH_KEY > key.pem
+      - name: deploying to cloud
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.HOST}}
+          username: ${{secrets.USERNAME}}
+          key: ${{secrets.SSH_KEY}}
+          port: ${{secrets.PORT}}
+          script: |
+            whoami
+            cd /
+            touch plik2.txt
