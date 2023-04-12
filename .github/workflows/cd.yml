@@ -31,4 +31,4 @@ jobs:
           script: |
             whoami
             cd /
-            touch plik2.txt
+            sudo touch plik2.txt
