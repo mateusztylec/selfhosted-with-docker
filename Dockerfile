@@ -1,6 +1,6 @@
 FROM python:3.11.0
 
-RUN mkdir /www
+RUN mkdir -p /www/docs && touch mkdocs.yml
 
 WORKDIR /www
 

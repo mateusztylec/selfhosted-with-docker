@@ -44,4 +44,6 @@ jobs:
           port: ${{secrets.PORT}}
           script: |
             cd /docker_images/mkdocs
+            docker pull ${{ secrets.DOCKER_USERNAME }}/docker-incubator
             sudo docker-compose up -d
+            
