@@ -54,4 +54,3 @@ jobs:
           local_path: './site/*'
           remote_path: '/www/docker-incubator'
             
- 
