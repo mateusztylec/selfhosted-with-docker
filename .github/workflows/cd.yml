@@ -6,44 +6,51 @@ on:
       - "main"  
 
 jobs:
-  deploy-docker:
-    environment:
-      name: production
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{secrets.DOCKER_USERNAME}}
-          password: ${{secrets.DOCKERHUB_TOKEN}}
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/docker-incubator:latest
+  # deploy-docker:
+  #   environment:
+  #     name: production
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Login to Docker Hub
+  #       uses: docker/login-action@v2
+  #       with:
+  #         username: ${{secrets.DOCKER_USERNAME}}
+  #         password: ${{secrets.DOCKERHUB_TOKEN}}
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v2
+  #     - name: Build and push
+  #       uses: docker/build-push-action@v4
+  #       with:
+  #         context: .
+  #         file: ./Dockerfile
+  #         push: true
+  #         tags: ${{ secrets.DOCKER_USERNAME }}/docker-incubator:latest
   deploy-cloud:
     runs-on: ubuntu-latest
-    needs: [deploy-docker]
+    # needs: [deploy-docker]
     environment: 
       name: production
     steps:
       - name: pulling git repo
         uses: actions/checkout@v2 
-      - name: deploying to cloud
-        uses: appleboy/ssh-action@master
+      - name: set up python
+        uses: actions/setup-python@v4
         with:
-          host: ${{secrets.HOST}}
+          python-version: "3.11"
+      - name: Install dependecies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          mkdocs build
+      - name: deploying to cloud
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          server: ${{secrets.HOST}}
           username: ${{secrets.USERNAME}}
-          key: ${{secrets.SSH_KEY}}
+          ssh_private_key: ${{secrets.SSH_KEY}}
           port: ${{secrets.PORT}}
-          script: |
-            cd /docker_images/mkdocs
-            docker pull ${{ secrets.DOCKER_USERNAME }}/docker-incubator
-            sudo docker-compose up -d
+          local_path: './site/*'
+          remote_path: '/www/docker-incubator'
             
