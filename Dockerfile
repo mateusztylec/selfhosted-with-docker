@@ -8,8 +8,8 @@ COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY docs .
-COPY mkdocs.yml .
+COPY docs docs
+COPY mkdocs.yml mkdocs.yml
 
 CMD ["mkdocs", "serve"]
 
