@@ -8,7 +8,7 @@ on:
 jobs:
   deploy-docker:
     environment:
-      name: testing
+      name: production
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,7 +26,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/clockbox:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/docker-incubator:latest
   deploy-cloud:
     runs-on: ubuntu-latest
     needs: [deploy-docker]
