@@ -1,2 +1,2 @@
 # selfhosted-with-docker
-https://docker.mateusztylec.xyz
+[Check out this site!](https://docker.mateusztylec.xyz)
